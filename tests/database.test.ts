@@ -1,0 +1,48 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { randomUUID } from 'node:crypto';
+import request from 'supertest';
+import app from '../src/app';
+import { prisma } from '../src/prisma';
+
+process.env.JWT_SECRET = 'test-secret';
+
+test('PostgreSQL enforces todo ownership through every endpoint', { skip: process.env.RUN_DB_TESTS !== '1' }, async () => {
+  const emails = [`${randomUUID()}@example.com`, `${randomUUID()}@example.com`];
+  let id: number | undefined;
+  try {
+    const first = await request(app).post('/auth/register').send({ email: emails[0], password: 'password123' });
+    const second = await request(app).post('/auth/register').send({ email: emails[1], password: 'password123' });
+    assert.equal(first.status, 201);
+    assert.equal(second.status, 201);
+    const owner = `Bearer ${first.body.accessToken}`;
+    const other = `Bearer ${second.body.accessToken}`;
+    const login = await request(app).post('/auth/login').send({ email: emails[0], password: 'password123' });
+    assert.equal(login.status, 200);
+    assert.equal((await request(app).post('/auth/login').send({ email: emails[0], password: 'wrongpass' })).status, 401);
+    const user = await prisma.user.findUnique({ where: { email: emails[0] } });
+    assert.ok(user?.passwordHash.startsWith('$2'));
+    assert.notEqual(user?.passwordHash, 'password123');
+    const created = await request(app).post('/todos').set('Authorization', owner).send({ title: 'Database test' });
+    assert.equal(created.status, 201);
+    id = created.body.id;
+    assert.equal(created.body.completed, false);
+    assert.equal(created.body.description, null);
+    assert.ok(created.body.createdAt);
+    assert.ok(created.body.updatedAt);
+    assert.equal((await request(app).get(`/todos/${id}`).set('Authorization', owner)).body.title, 'Database test');
+    assert.ok((await request(app).get('/todos').set('Authorization', owner)).body.some((item: { id: number }) => item.id === id));
+    assert.equal((await request(app).get('/todos').set('Authorization', other)).body.length, 0);
+    assert.equal((await request(app).get(`/todos/${id}`).set('Authorization', other)).status, 404);
+    assert.equal((await request(app).patch(`/todos/${id}`).set('Authorization', other).send({ completed: true })).status, 404);
+    assert.equal((await request(app).delete(`/todos/${id}`).set('Authorization', other)).status, 404);
+    assert.equal((await request(app).patch(`/todos/${id}`).set('Authorization', owner).send({ completed: true })).body.completed, true);
+    assert.equal((await prisma.todo.findUnique({ where: { id } }))?.completed, true);
+    assert.equal((await request(app).delete(`/todos/${id}`).set('Authorization', owner)).status, 204);
+    assert.equal((await request(app).get(`/todos/${id}`).set('Authorization', owner)).status, 404);
+  } finally {
+    if (id !== undefined) await prisma.todo.deleteMany({ where: { id } });
+    await prisma.user.deleteMany({ where: { email: { in: emails } } });
+    await prisma.$disconnect();
+  }
+});
