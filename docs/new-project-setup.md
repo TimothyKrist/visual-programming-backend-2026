@@ -78,14 +78,16 @@ Replace the contents of `src/prisma/contract.prisma` with:
 // use prisma-8
 
 model Todo {
-  id          Int     @id @default(autoincrement())
+  id          String   @id @default(uuid()) @db.Uuid
   title       String
   description String?
-  completed   Boolean @default(false)
+  completed   Boolean  @default(false)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 }
 ```
 
-This is a starting model. Add users, timestamps, and relationships as you build the API.
+This is a starting model. Add users and relationships as you build the API.
 
 ## 8. Create and apply the first migration
 
