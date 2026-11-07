@@ -12,44 +12,77 @@ function idFrom(req: Request): string | null {
 
 export async function list(req: Request, res: Response, next: NextFunction) {
   const body = emptyBody.safeParse(req.body);
-  if (!body.success) return res.status(400).json({ error: z.prettifyError(body.error) } satisfies ErrorResponse);
-  try { res.json((await service.list(res.locals.userId)).map(toTodoResponse)); } catch (error) { next(error); }
+  if (!body.success) {
+    return res.status(400).json({ error: z.prettifyError(body.error) } satisfies ErrorResponse);
+  }
+  try {
+    res.json((await service.list(res.locals.userId)).map(toTodoResponse));
+  } catch (error) {
+    next(error);
+  }
 }
 
 export async function get(req: Request, res: Response, next: NextFunction) {
   const body = emptyBody.safeParse(req.body);
-  if (!body.success) return res.status(400).json({ error: z.prettifyError(body.error) } satisfies ErrorResponse);
+  if (!body.success) {
+    return res.status(400).json({ error: z.prettifyError(body.error) } satisfies ErrorResponse);
+  }
   const id = idFrom(req);
-  if (id === null) return res.status(400).json({ error: 'id must be a UUID' } satisfies ErrorResponse);
+  if (id === null) {
+    return res.status(400).json({ error: 'id must be a UUID' } satisfies ErrorResponse);
+  }
   try {
     const todo = await service.get(res.locals.userId, id);
-    return todo ? res.json(toTodoResponse(todo)) : res.status(404).json({ error: 'Todo not found' } satisfies ErrorResponse);
-  } catch (error) { return next(error); }
+    if (!todo) {
+      return res.status(404).json({ error: 'Todo not found' } satisfies ErrorResponse);
+    }
+    return res.json(toTodoResponse(todo));
+  } catch (error) {
+    return next(error);
+  }
 }
 
 export async function create(req: Request, res: Response, next: NextFunction) {
   const input = todo.safeParse(req.body);
-  if (!input.success) return res.status(400).json({ error: z.prettifyError(input.error) } satisfies ErrorResponse);
-  try { return res.status(201).json(toTodoResponse(await service.create(res.locals.userId, input.data))); }
-  catch (error) { return next(error); }
+  if (!input.success) {
+    return res.status(400).json({ error: z.prettifyError(input.error) } satisfies ErrorResponse);
+  }
+  try {
+    return res.status(201).json(toTodoResponse(await service.create(res.locals.userId, input.data)));
+  } catch (error) {
+    return next(error);
+  }
 }
 
 export async function update(req: Request, res: Response, next: NextFunction) {
   const id = idFrom(req);
-  if (id === null) return res.status(400).json({ error: 'id must be a UUID' } satisfies ErrorResponse);
+  if (id === null) {
+    return res.status(400).json({ error: 'id must be a UUID' } satisfies ErrorResponse);
+  }
   const input = updateTodo.safeParse(req.body);
-  if (!input.success) return res.status(400).json({ error: z.prettifyError(input.error) } satisfies ErrorResponse);
-  try { return res.json(toTodoResponse(await service.update(res.locals.userId, id, input.data))); }
-  catch (error) { return next(error); }
+  if (!input.success) {
+    return res.status(400).json({ error: z.prettifyError(input.error) } satisfies ErrorResponse);
+  }
+  try {
+    return res.json(toTodoResponse(await service.update(res.locals.userId, id, input.data)));
+  } catch (error) {
+    return next(error);
+  }
 }
 
 export async function remove(req: Request, res: Response, next: NextFunction) {
   const body = emptyBody.safeParse(req.body);
-  if (!body.success) return res.status(400).json({ error: z.prettifyError(body.error) } satisfies ErrorResponse);
+  if (!body.success) {
+    return res.status(400).json({ error: z.prettifyError(body.error) } satisfies ErrorResponse);
+  }
   const id = idFrom(req);
-  if (id === null) return res.status(400).json({ error: 'id must be a UUID' } satisfies ErrorResponse);
+  if (id === null) {
+    return res.status(400).json({ error: 'id must be a UUID' } satisfies ErrorResponse);
+  }
   try {
     await service.remove(res.locals.userId, id);
     return res.status(204).end();
-  } catch (error) { return next(error); }
+  } catch (error) {
+    return next(error);
+  }
 }

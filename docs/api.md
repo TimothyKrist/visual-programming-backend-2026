@@ -19,6 +19,18 @@ The UUID migration preserves users, todos, ownership, and existing todo timestam
 
 The user migration refuses to run while the old shared list contains todos, because it cannot know who owns them. Before migrating such a database, back up and export the existing todos, remove them from the old table, apply the migration, and register accounts. Recreate the exported todos under the appropriate accounts through the API. If `prisma migrate deploy` recorded the migration as failed, mark it rolled back with `pnpm exec prisma migrate resolve --rolled-back 20261028010000_add_users_auth` before retrying. Keep the backup until the data has been checked.
 
+## CORS
+
+The Express `cors` package runs before JSON parsing, authentication, and routes. All origins are allowed (`Access-Control-Allow-Origin: *`), without cookie credentials; clients can send the existing Bearer token in the `Authorization` header. Preflight requests reflect requested headers, including `Authorization` and `Content-Type`.
+
+The advertised allowed methods are exactly `GET, POST, PUT, PATCH, DELETE, QUERY`. `OPTIONS` requests receive a `204` preflight response without authentication, but `OPTIONS` and `HEAD` are not in the advertised list. This browser policy does not reject direct HTTP requests or add routes: `PUT` and `QUERY` have no endpoints in this API. CORS is not authorization.
+
+For a private frontend deployment, consider replacing the wildcard origin with an explicit frontend-origin allowlist.
+
+## TypeScript style
+
+Prefer named function declarations for helpers and handlers, named function expressions for callbacks, and method shorthand inside service objects. Use readable blocks for conditionals and error handling instead of compressed one-line control flow. Keep schema-inferred input types and response DTO checks; syntax simplification must not weaken runtime validation or change API behavior.
+
 ## Authentication
 
 | Method | Path | Result |

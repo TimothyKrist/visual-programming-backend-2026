@@ -1,13 +1,14 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
+import { setTimeout as delay } from 'node:timers/promises';
 import request from 'supertest';
 import app from '../src/app';
 import { prisma } from '../src/prisma';
 
 process.env.JWT_SECRET = 'test-secret';
 
-test('PostgreSQL enforces todo ownership through every endpoint', { skip: process.env.RUN_DB_TESTS !== '1' }, async () => {
+test('PostgreSQL enforces todo ownership through every endpoint', { skip: process.env.RUN_DB_TESTS !== '1' }, async function enforceTodoOwnership() {
   const emails = [`${randomUUID()}@example.com`, `${randomUUID()}@example.com`];
   let id: string | undefined;
   try {
@@ -26,7 +27,8 @@ test('PostgreSQL enforces todo ownership through every endpoint', { skip: proces
     assert.match(user!.id, /^[0-9a-f-]{36}$/i);
     assert.ok(user!.createdAt instanceof Date);
     assert.ok(user!.updatedAt instanceof Date);
-    await new Promise(resolve => setTimeout(resolve, 10));
+    // PostgreSQL timestamps use the real clock, so fake timers cannot advance them.
+    await delay(10);
     const updatedUser = await prisma.user.update({ where: { id: user!.id }, data: { email: emails[0] } });
     assert.equal(updatedUser.createdAt.getTime(), user!.createdAt.getTime());
     assert.ok(updatedUser.updatedAt > user!.updatedAt);
@@ -40,12 +42,15 @@ test('PostgreSQL enforces todo ownership through every endpoint', { skip: proces
     assert.ok(created.body.createdAt);
     assert.ok(created.body.updatedAt);
     assert.equal((await request(app).get(`/todos/${id}`).set('Authorization', owner)).body.title, 'Database test');
-    assert.ok((await request(app).get('/todos').set('Authorization', owner)).body.some((item: { id: string }) => item.id === id));
+    assert.ok((await request(app).get('/todos').set('Authorization', owner)).body.some(function matchesTodo(item: { id: string }) {
+      return item.id === id;
+    }));
     assert.equal((await request(app).get('/todos').set('Authorization', other)).body.length, 0);
     assert.equal((await request(app).get(`/todos/${id}`).set('Authorization', other)).status, 404);
     assert.equal((await request(app).patch(`/todos/${id}`).set('Authorization', other).send({ completed: true })).status, 404);
     assert.equal((await request(app).delete(`/todos/${id}`).set('Authorization', other)).status, 404);
-    await new Promise(resolve => setTimeout(resolve, 10));
+    // Let PostgreSQL's real clock advance before checking the update timestamp.
+    await delay(10);
     const updated = await request(app).patch(`/todos/${id}`).set('Authorization', owner).send({ completed: true });
     assert.equal(updated.body.completed, true);
     assert.equal(updated.body.createdAt, created.body.createdAt);
@@ -54,7 +59,9 @@ test('PostgreSQL enforces todo ownership through every endpoint', { skip: proces
     assert.equal((await request(app).delete(`/todos/${id}`).set('Authorization', owner)).status, 204);
     assert.equal((await request(app).get(`/todos/${id}`).set('Authorization', owner)).status, 404);
   } finally {
-    if (id !== undefined) await prisma.todo.deleteMany({ where: { id } });
+    if (id !== undefined) {
+      await prisma.todo.deleteMany({ where: { id } });
+    }
     await prisma.user.deleteMany({ where: { email: { in: emails } } });
     await prisma.$disconnect();
   }

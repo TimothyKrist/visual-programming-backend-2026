@@ -13,15 +13,36 @@ const missingId = '33333333-3333-4333-8333-333333333333';
 const token = authService.token(userId);
 const authorization = `Bearer ${token}`;
 
-test('todo endpoints validate input and perform CRUD', async t => {
+test('todo endpoints validate input and perform CRUD', async function validateTodoEndpoints(t) {
   const todo = { id: todoId, title: 'Buy milk', description: null, completed: false, userId, createdAt: new Date(), updatedAt: new Date(), internal: 'not for clients' };
   const expected = { id: todo.id, title: todo.title, description: todo.description, completed: todo.completed, userId: todo.userId, createdAt: todo.createdAt.toISOString(), updatedAt: todo.updatedAt.toISOString() };
-  const findMany = t.mock.method(todoService, 'list', async () => [todo]);
-  const findUnique = t.mock.method(todoService, 'get', async (_userId, id) => id === todoId ? todo : null);
-  const create = t.mock.method(todoService, 'create', async (_userId, data) => ({ ...todo, ...data }) as typeof todo);
-  const missing = () => { throw new Prisma.PrismaClientKnownRequestError('missing', { code: 'P2025', clientVersion: 'test' }); };
-  const update = t.mock.method(todoService, 'update', async (_userId, id, data) => id === todoId ? { ...todo, ...data } as typeof todo : missing());
-  const remove = t.mock.method(todoService, 'remove', async (_userId, id) => id === todoId ? todo : missing());
+  const findMany = t.mock.method(todoService, 'list', async function list() {
+    return [todo];
+  });
+  const findUnique = t.mock.method(todoService, 'get', async function get(_userId, id) {
+    if (id === todoId) {
+      return todo;
+    }
+    return null;
+  });
+  const create = t.mock.method(todoService, 'create', async function create(_userId, data) {
+    return { ...todo, ...data } as typeof todo;
+  });
+  function missing() {
+    throw new Prisma.PrismaClientKnownRequestError('missing', { code: 'P2025', clientVersion: 'test' });
+  }
+  const update = t.mock.method(todoService, 'update', async function update(_userId, id, data) {
+    if (id === todoId) {
+      return { ...todo, ...data } as typeof todo;
+    }
+    return missing();
+  });
+  const remove = t.mock.method(todoService, 'remove', async function remove(_userId, id) {
+    if (id === todoId) {
+      return todo;
+    }
+    return missing();
+  });
 
   assert.deepEqual((await request(app).get('/todos').set('Authorization', authorization)).body, [expected]);
   assert.equal(findMany.mock.calls.length, 1);
@@ -51,7 +72,9 @@ test('todo endpoints validate input and perform CRUD', async t => {
     await request(app).get('/todos').set('Authorization', authorization).send({ extra: 1 }),
     await request(app).get(`/todos/${todoId}`).set('Authorization', authorization).send({ extra: 1 }),
     await request(app).delete(`/todos/${todoId}`).set('Authorization', authorization).send({ extra: 1 }),
-  ]) assert.equal(response.status, 400);
+  ]) {
+    assert.equal(response.status, 400);
+  }
   for (const id of ['0', '-1', '1.5', '2147483648', 'abc']) {
     assert.equal((await request(app).get(`/todos/${id}`).set('Authorization', authorization)).status, 400);
   }
@@ -60,10 +83,12 @@ test('todo endpoints validate input and perform CRUD', async t => {
   assert.equal((await request(app).get('/missing')).status, 404);
 });
 
-test('unexpected service errors are handled without exposing details', async t => {
+test('unexpected service errors are handled without exposing details', async function handleUnexpectedServiceErrors(t) {
   const error = new Error('private database details');
-  t.mock.method(todoService, 'list', async () => { throw error; });
-  const log = t.mock.method(console, 'error', () => {});
+  t.mock.method(todoService, 'list', async function failToList() {
+    throw error;
+  });
+  const log = t.mock.method(console, 'error', function suppressErrorLog() {});
   const response = await request(app).get('/todos').set('Authorization', authorization);
   assert.equal(response.status, 500);
   assert.deepEqual(response.body, { error: 'Internal server error' });

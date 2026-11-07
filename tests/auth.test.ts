@@ -10,15 +10,22 @@ import { authService } from '../src/services/auth.service';
 process.env.JWT_SECRET = 'test-secret';
 const userId = '11111111-1111-4111-8111-111111111111';
 
-test('registration and login validate credentials and issue one-hour access tokens', async t => {
+test('registration and login validate credentials and issue one-hour access tokens', async function validateCredentialsAndTokens(t) {
   let saved: { id: string; email: string; passwordHash: string; createdAt: Date; updatedAt: Date } | undefined;
-  t.mock.method(authService, 'register', async (email, password) => {
-    if (saved) throw new Prisma.PrismaClientKnownRequestError('duplicate', { code: 'P2002', clientVersion: 'test' });
+  t.mock.method(authService, 'register', async function register(email, password) {
+    if (saved) {
+      throw new Prisma.PrismaClientKnownRequestError('duplicate', { code: 'P2002', clientVersion: 'test' });
+    }
     assert.equal(password, 'password123');
     saved = { id: userId, email, passwordHash: 'hash', createdAt: new Date(), updatedAt: new Date() };
     return saved;
   });
-  t.mock.method(authService, 'login', async (email, password) => email === saved?.email && password === 'password123' ? saved : null);
+  t.mock.method(authService, 'login', async function login(email, password) {
+    if (email === saved?.email && password === 'password123') {
+      return saved;
+    }
+    return null;
+  });
 
   const registered = await request(app).post('/auth/register').send({ email: ' Student@Example.com ', password: 'password123' });
   assert.equal(registered.status, 201);
@@ -40,16 +47,20 @@ test('registration and login validate credentials and issue one-hour access toke
   }
 });
 
-test('registration accepts passwords longer than eight characters without additional composition rules', async t => {
-  const register = t.mock.method(authService, 'register', async (email, password) => ({ id: userId, email, passwordHash: password, createdAt: new Date(), updatedAt: new Date() }));
+test('registration accepts passwords longer than eight characters without additional composition rules', async function acceptLongPasswords(t) {
+  const register = t.mock.method(authService, 'register', async function register(email, password) {
+    return { id: userId, email, passwordHash: password, createdAt: new Date(), updatedAt: new Date() };
+  });
   for (const password of ['123456789', 'x'.repeat(73)]) {
     assert.equal((await request(app).post('/auth/register').send({ email: 'x@example.com', password })).status, 201);
   }
   assert.equal(register.mock.calls.length, 2);
 });
 
-test('todo routes reject missing, tampered, expired and non-expiring tokens', async t => {
-  const list = t.mock.method(todoService, 'list', async () => []);
+test('todo routes reject missing, tampered, expired and non-expiring tokens', async function rejectInvalidTokens(t) {
+  const list = t.mock.method(todoService, 'list', async function list() {
+    return [];
+  });
   const expired = jwt.sign({}, 'test-secret', { subject: userId, expiresIn: -1 });
   const noExpiry = jwt.sign({}, 'test-secret', { subject: userId });
   const invalidSubject = jwt.sign({}, 'test-secret', { subject: '1', expiresIn: '1h' });

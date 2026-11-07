@@ -8,7 +8,9 @@ import { ErrorResponse } from '../models/error.response';
 
 export async function register(req: Request, res: Response, next: NextFunction) {
   const input = registration.safeParse(req.body);
-  if (!input.success) return res.status(400).json({ error: z.prettifyError(input.error) } satisfies ErrorResponse);
+  if (!input.success) {
+    return res.status(400).json({ error: z.prettifyError(input.error) } satisfies ErrorResponse);
+  }
   const { email, password } = input.data;
   try {
     const user = await authService.register(email, password);
@@ -23,11 +25,17 @@ export async function register(req: Request, res: Response, next: NextFunction) 
 
 export async function login(req: Request, res: Response, next: NextFunction) {
   const input = credentials.safeParse(req.body);
-  if (!input.success) return res.status(400).json({ error: z.prettifyError(input.error) } satisfies ErrorResponse);
+  if (!input.success) {
+    return res.status(400).json({ error: z.prettifyError(input.error) } satisfies ErrorResponse);
+  }
   const { email, password } = input.data;
   try {
     const user = await authService.login(email, password);
-    if (!user) return res.status(401).json({ error: 'Invalid email or password' } satisfies ErrorResponse);
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid email or password' } satisfies ErrorResponse);
+    }
     return res.json({ accessToken: authService.token(user.id) } satisfies AuthResponse);
-  } catch (error) { return next(error); }
+  } catch (error) {
+    return next(error);
+  }
 }

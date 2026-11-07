@@ -2,7 +2,7 @@ import { Prisma } from '@prisma/client';
 import { ErrorRequestHandler } from 'express';
 import { ErrorResponse } from '../models/error.response';
 
-export const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
+export const errorHandler: ErrorRequestHandler = function errorHandler(error, _req, res, _next) {
   if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
     res.status(404).json({ error: 'Todo not found' } satisfies ErrorResponse);
     return;

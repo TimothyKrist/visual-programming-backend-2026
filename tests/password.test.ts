@@ -4,14 +4,16 @@ import bcrypt from 'bcryptjs';
 import { prisma } from '../src/prisma';
 import { authService } from '../src/services/auth.service';
 
-test('password hashing verifies all bytes and upgrades legacy hashes', async () => {
+test('password hashing verifies all bytes and upgrades legacy hashes', async function verifyAndUpgradePasswordHashes() {
   let user = { id: '11111111-1111-4111-8111-111111111111', email: 'test@example.com', passwordHash: '' };
-  prisma.user.create = (async ({ data }: any) => {
+  prisma.user.create = (async function createUser({ data }: { data: Partial<typeof user> }) {
     user = { ...user, ...data };
     return user;
   }) as typeof prisma.user.create;
-  prisma.user.findUnique = (async () => user) as typeof prisma.user.findUnique;
-  prisma.user.updateMany = (async ({ data }: any) => {
+  prisma.user.findUnique = (async function findUser() {
+    return user;
+  }) as typeof prisma.user.findUnique;
+  prisma.user.updateMany = (async function updateUsers({ data }: { data: Partial<typeof user> }) {
     user = { ...user, ...data };
     return { count: 1 };
   }) as typeof prisma.user.updateMany;
