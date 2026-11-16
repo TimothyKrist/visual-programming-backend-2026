@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       '@prisma/client':
-        specifier: ^6.19.0
+        specifier: ^6.19.3
         version: 6.19.3(prisma@6.19.3(typescript@5.9.3))(typescript@5.9.3)
       bcryptjs:
         specifier: ^3.0.3
@@ -18,10 +18,10 @@ importers:
         specifier: ^2.8.6
         version: 2.8.6
       dotenv:
-        specifier: ^16.4.7
+        specifier: ^16.6.1
         version: 16.6.1
       express:
-        specifier: ^4.21.2
+        specifier: ^4.22.3
         version: 4.22.3
       jsonwebtoken:
         specifier: ^9.0.3
@@ -34,28 +34,28 @@ importers:
         specifier: ^2.8.19
         version: 2.8.19
       '@types/express':
-        specifier: ^4.17.21
+        specifier: ^4.17.25
         version: 4.17.25
       '@types/jsonwebtoken':
         specifier: ^9.0.10
         version: 9.0.10
       '@types/node':
-        specifier: ^22.0.0
+        specifier: ^22.20.5
         version: 22.20.5
       '@types/supertest':
         specifier: ^6.0.3
         version: 6.0.3
       prisma:
-        specifier: ^6.19.0
+        specifier: ^6.19.3
         version: 6.19.3(typescript@5.9.3)
       supertest:
-        specifier: ^7.0.0
-        version: 7.3.1
+        specifier: ^7.3.2
+        version: 7.3.2
       tsx:
-        specifier: ^4.0.0
+        specifier: ^4.23.15
         version: 4.23.15
       typescript:
-        specifier: ^5.0.0
+        specifier: ^5.9.3
         version: 5.9.3
 
 packages:
@@ -377,8 +377,8 @@ packages:
   confbox@0.2.4:
     resolution: {integrity: sha512-ysOGlgTFbN2/Y6Cg3Iye8YKulHw+R2fNXHrgSmXISQdMnomY6eNDprVdW9R5xBguEqI954+S6709UyiO7B+6OQ==}
 
-  confbox@0.3.1:
-    resolution: {integrity: sha512-cKUSoKa8YxFZZSmraVi7onONx3amu77ngK3kGpsYHDH7drPwCRkQE1RYMPlLRrMtnciRj274XNRxcHxnKmDSnA==}
+  confbox@0.3.2:
+    resolution: {integrity: sha512-ZUAKhKlkCOrIGKc8cj7zek9s9z1mveHif/25nUshI2BzCRzF7KH7KHa+Lnh2ubq+e1tIlaFuP763mzW4qVoehg==}
 
   consola@3.4.2:
     resolution: {integrity: sha512-5IKcdX0nnYavi6G7TtOhwkYzyjfJlatbjMjuLSfE2kYT5pMDOilZ4OvMhi637CcDICTmz3wARPoyhqyX1Y+XvA==}
@@ -473,8 +473,8 @@ packages:
     resolution: {integrity: sha512-i6UzDscO/XfAcNYD75CfICkmfLedpyPDdozrLMmQc5ORaQcdMoc21OnlEylMIqI7U8eniKrPMxxtj8k0vhmJhA==}
     engines: {node: '>=14'}
 
-  encodeurl@2.0.0:
-    resolution: {integrity: sha512-Q0n9HRi4m6JuGIV1eFlmvJB7ZEVxu93IrMyiMsGC0lrMJMWzRgx6WGquyfQgZVb31vhGgXnfmPNNXmxnOkRBrg==}
+  encodeurl@2.0.3:
+    resolution: {integrity: sha512-mIteYONiEfc4xWf2F1WXovh1c8npzS00vNeiUPdwFF+QlVJni+gNvpQltLMQhob8rew/bWWc/bGTuUr0EUGt0w==}
     engines: {node: '>= 0.8'}
 
   es-define-property@1.0.1:
@@ -509,8 +509,8 @@ packages:
     resolution: {integrity: sha512-Bdcs4+3qlpVlx2NRn6fgX2Ue2/gGRaPeawebgclM0ERSCqDpA+owF1fdPwjJUTAJWMTuAaxjDf+hzb0/4eKvvw==}
     engines: {node: '>= 0.10.0'}
 
-  exsolve@1.1.3:
-    resolution: {integrity: sha512-kuzL9zherLQoqDeQaS55AiiIg1kb4KYXaSusTtgZTPlvKP2gGCI82LNmBNh5RjDVUXIcmgx+/Mx7vPwRzBbhJA==}
+  exsolve@1.2.0:
+    resolution: {integrity: sha512-h1pQPR9XoeSMdntRNCjyTznaume4UpfXrULBnlkZ2CUM/G5eSa+pBByGldO5uR8dxbPC+OuJXsPPNf+JZ81ADg==}
 
   fast-check@3.23.2:
     resolution: {integrity: sha512-h5+1OzzfCC3Ef7VbtKdcv7zsstUQwUDlYpUTvjeUsJAssPgLn7QzbboPtL5ro04Mq0rPOsMzl7q5hIbRs2wD1A==}
@@ -727,12 +727,12 @@ packages:
   pure-rand@6.1.0:
     resolution: {integrity: sha512-bVWawvoZoBYpp6yIoQtQXHZjmz35RSVHnUOTefl8Vcjr8snTPY1wnpSPMWekcFwbxI6gtmT7rSYPFvz71ldiOA==}
 
-  qs@6.16.1:
-    resolution: {integrity: sha512-5Px6J7rfHBAGUhNQ3es4YzcOdBBw0SDcVtThJml4RdnKw4tKs2epA0kPZ+K8X+WiHktT93RHVcQ/3ym5aTCgtg==}
+  qs@6.16.2:
+    resolution: {integrity: sha512-VYdnB5S7/0IeXzBacUtwNAaM6d7Y/PgYnNC7bJCI6meqA/OgnsQbZMtVW8Dt2D1PHgbHGtYmhSoEIgvt7xZ2ZA==}
     engines: {node: '>=0.6'}
 
-  qs@6.17.0:
-    resolution: {integrity: sha512-5LK5BZ2XDHMvcUJaf0CQ5HL3aVgKbpklvByC7qLSxYkfE8COEEbJg5xCHWCTqzqi0Gs4Jn5Mv5v3R38W6edscA==}
+  qs@6.17.1:
+    resolution: {integrity: sha512-jd3COkaKVgGUW+ZHyEHCG9bH7RoaaiWuMgzsIBjUMVjLAaWGWpoUAVwljVvBHxRu/2qEHnadLGZrkutYUBPQJA==}
     engines: {node: '>=0.6'}
 
   range-parser@1.2.1:
@@ -756,8 +756,8 @@ packages:
   safer-buffer@2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
 
-  semver@7.8.5:
-    resolution: {integrity: sha512-Y7/KDsb8LjooZpwaqGyulO6DQlksgCncchHGk+sZIY4SBvUocMBEFH5Ur1fI4dV+Jvl0w6cjvucaIi40puRioA==}
+  semver@7.8.6:
+    resolution: {integrity: sha512-9lpSSU4Mly3mrtruwLs1eLK6+gzbzqeBFwRNjIjE+9LuDpWdYctrQlQ3ej1Ilgi7gknpsTRnPoLP8DpCHqHIJw==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -792,12 +792,12 @@ packages:
     resolution: {integrity: sha512-DvEy55V3DB7uknRo+4iOGT5fP1slR8wQohVdknigZPMpMstaKJQWhwiYBACJE3Ul2pTnATihhBYnRhZQHGBiRw==}
     engines: {node: '>= 0.8'}
 
-  superagent@10.4.1:
-    resolution: {integrity: sha512-PVMkMrhKrSTtFhUU8jiWuGh/gyRMKiyCTCmm0+qVzRNxlfntmRKJkDhlEXN62x3HIb33sQ4kmL8lcSdccWAchQ==}
+  superagent@10.4.2:
+    resolution: {integrity: sha512-u+PFV+VKiAKKzJqnCvveNya3N+pR/8jUZs/ek6jRfE41fpSCNdFY61L7NYmSgB6I9TTFM50ywoPXRKgw2k3wKw==}
     engines: {node: '>=14.18.0'}
 
-  supertest@7.3.1:
-    resolution: {integrity: sha512-vNaNCFoCR/edDbErQZp5KLNT8R4dSPHX7rlDLoE8hWLAm/878j6ShMbe8HK/E6RwwuhlSXVelXAIg9AxR5WWPw==}
+  supertest@7.3.2:
+    resolution: {integrity: sha512-hR0dKRUE+PwZhHLdq/GRhf97HbUQte+AhbpWBQ9nh02tpjujVJj0GY4aygd1dAKdNZ7UZexWHpeItyJi/jLsgw==}
     engines: {node: '>=14.18.0'}
 
   tinyexec@1.3.1:
@@ -1066,7 +1066,7 @@ snapshots:
       http-errors: 2.0.1
       iconv-lite: 0.4.24
       on-finished: 2.4.2
-      qs: 6.16.1
+      qs: 6.16.2
       raw-body: 2.5.3
       type-is: 1.6.18
       unpipe: 1.0.0
@@ -1083,7 +1083,7 @@ snapshots:
       confbox: 0.2.4
       defu: 6.1.7
       dotenv: 16.6.1
-      exsolve: 1.1.3
+      exsolve: 1.2.0
       giget: 2.0.0
       jiti: 2.7.0
       ohash: 2.0.12
@@ -1120,7 +1120,7 @@ snapshots:
 
   confbox@0.2.4: {}
 
-  confbox@0.3.1: {}
+  confbox@0.3.2: {}
 
   consola@3.4.2: {}
 
@@ -1189,7 +1189,7 @@ snapshots:
 
   empathic@2.0.0: {}
 
-  encodeurl@2.0.0: {}
+  encodeurl@2.0.3: {}
 
   es-define-property@1.0.1: {}
 
@@ -1250,7 +1250,7 @@ snapshots:
       cookie-signature: 1.0.7
       debug: 2.6.9
       depd: 2.0.0
-      encodeurl: 2.0.0
+      encodeurl: 2.0.3
       escape-html: 1.0.3
       etag: 1.8.1
       finalhandler: 1.3.2
@@ -1262,7 +1262,7 @@ snapshots:
       parseurl: 1.3.3
       path-to-regexp: 0.1.13
       proxy-addr: 2.0.8
-      qs: 6.16.1
+      qs: 6.16.2
       range-parser: 1.2.1
       safe-buffer: 5.2.1
       send: 0.19.2
@@ -1275,7 +1275,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  exsolve@1.1.3: {}
+  exsolve@1.2.0: {}
 
   fast-check@3.23.2:
     dependencies:
@@ -1286,7 +1286,7 @@ snapshots:
   finalhandler@1.3.2:
     dependencies:
       debug: 2.6.9
-      encodeurl: 2.0.0
+      encodeurl: 2.0.3
       escape-html: 1.0.3
       on-finished: 2.4.2
       parseurl: 1.3.3
@@ -1386,7 +1386,7 @@ snapshots:
       lodash.isstring: 4.0.1
       lodash.once: 4.1.1
       ms: 2.1.3
-      semver: 7.8.5
+      semver: 7.8.6
 
   jwa@2.0.1:
     dependencies:
@@ -1469,8 +1469,8 @@ snapshots:
 
   pkg-types@2.4.0:
     dependencies:
-      confbox: 0.3.1
-      exsolve: 1.1.3
+      confbox: 0.3.2
+      exsolve: 1.2.0
       pathe: 2.0.3
 
   prisma@6.19.3(typescript@5.9.3):
@@ -1489,12 +1489,12 @@ snapshots:
 
   pure-rand@6.1.0: {}
 
-  qs@6.16.1:
+  qs@6.16.2:
     dependencies:
       es-define-property: 1.0.1
       side-channel: 1.1.1
 
-  qs@6.17.0:
+  qs@6.17.1:
     dependencies:
       es-define-property: 1.0.1
       side-channel: 1.1.1
@@ -1519,14 +1519,14 @@ snapshots:
 
   safer-buffer@2.1.2: {}
 
-  semver@7.8.5: {}
+  semver@7.8.6: {}
 
   send@0.19.2:
     dependencies:
       debug: 2.6.9
       depd: 2.0.0
       destroy: 1.2.0
-      encodeurl: 2.0.0
+      encodeurl: 2.0.3
       escape-html: 1.0.3
       etag: 1.8.1
       fresh: 0.5.2
@@ -1541,7 +1541,7 @@ snapshots:
 
   serve-static@1.16.3:
     dependencies:
-      encodeurl: 2.0.0
+      encodeurl: 2.0.3
       escape-html: 1.0.3
       parseurl: 1.3.3
       send: 0.19.2
@@ -1580,7 +1580,7 @@ snapshots:
 
   statuses@2.0.2: {}
 
-  superagent@10.4.1:
+  superagent@10.4.2:
     dependencies:
       component-emitter: 1.3.1
       cookiejar: 2.1.4
@@ -1590,15 +1590,15 @@ snapshots:
       formidable: 3.5.4
       methods: 1.1.2
       mime: 2.6.0
-      qs: 6.17.0
+      qs: 6.17.1
     transitivePeerDependencies:
       - supports-color
 
-  supertest@7.3.1:
+  supertest@7.3.2:
     dependencies:
       cookie-signature: 1.2.2
       methods: 1.1.2
-      superagent: 10.4.1
+      superagent: 10.4.2
     transitivePeerDependencies:
       - supports-color
 
